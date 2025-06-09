@@ -1,16 +1,17 @@
 <?php
 
 declare(strict_types=1);
-namespace Src\Client\Domain\ValueObject;
 
-final class ClientId
+namespace Src\Wallet\Domain\ValueObject;
+
+final class WalletId
 {
     private $value;
 
     public function __construct(int $id)
     {
         if ($id <= 0) {
-            throw new \InvalidArgumentException('Client ID must be a positive integer.');
+            throw new \InvalidArgumentException('Wallet ID must be a positive integer.');
         }
         $this->value = $id;
     }
@@ -19,7 +20,6 @@ final class ClientId
     {
         return $this->value;
     }
-
     public function __toString(): string
     {
         return (string)$this->value;

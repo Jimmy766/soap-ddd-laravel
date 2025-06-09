@@ -1,16 +1,17 @@
 <?php
 
 declare(strict_types=1);
-namespace Src\Client\Domain\ValueObject;
 
-final class ClientId
+namespace Src\Payment\Domain\ValueObject;
+
+final class PaymentId
 {
     private $value;
 
     public function __construct(int $id)
     {
         if ($id <= 0) {
-            throw new \InvalidArgumentException('Client ID must be a positive integer.');
+            throw new \InvalidArgumentException('Payment ID must be a positive integer.');
         }
         $this->value = $id;
     }
