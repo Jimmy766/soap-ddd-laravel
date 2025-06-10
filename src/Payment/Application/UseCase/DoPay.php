@@ -33,7 +33,7 @@ final class DoPay
         $this->clientRepository = $clientRepository;
     }
 
-    public function __invoke(ClientDocumento $document, ClientCelular $phone, WalletSaldo $amount): void
+    public function __invoke(ClientDocumento $document, ClientCelular $phone, PaymentMonto $amount): void
     {
         $client = $this->clientRepository->findByCriteria($document, $phone);
         if (!$client) {
