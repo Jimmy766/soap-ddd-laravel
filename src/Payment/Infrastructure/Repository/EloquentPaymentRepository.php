@@ -21,10 +21,29 @@ class EloquentPaymentRepository implements PaymentRepository
         }
         return new Payment(
             new PaymentId($eloquentPayment->id),
-            new PaymentMonto($eloquentPayment->monto),
             new PaymentSessionId($eloquentPayment->session_id),
             new PaymentToken($eloquentPayment->token),
-            new PaymentEstado($eloquentPayment->estado)
+            new PaymentMonto($eloquentPayment->monto),
+            new PaymentEstado($eloquentPayment->estado),
+            $eloquentPayment->cliente
+        );
+    }
+
+    public function findByCriteria(PaymentSessionId $sessionId, PaymentToken $token): ?Payment
+    {
+        $eloquentPayment = EloquentPayment::where('session_id', $sessionId->value())
+            ->where('token', $token->value())
+            ->first();
+        if (!$eloquentPayment) {
+            return null;
+        }
+        return new Payment(
+            new PaymentId($eloquentPayment->id),
+            new PaymentSessionId($eloquentPayment->session_id),
+            new PaymentToken($eloquentPayment->token),
+            new PaymentMonto($eloquentPayment->monto),
+            new PaymentEstado($eloquentPayment->estado),
+            $eloquentPayment->cliente
         );
     }
 
@@ -34,7 +53,8 @@ class EloquentPaymentRepository implements PaymentRepository
             'monto' => $payment->monto()->value(),
             'session_id' => $payment->sessionId()->value(),
             'token' => $payment->token()->value(),
-            'estado' => $payment->estado()->value()
+            'estado' => $payment->estado()->value(),
+            'cliente_id' => $payment->client()->id()->value()
         ]);
     }
 
