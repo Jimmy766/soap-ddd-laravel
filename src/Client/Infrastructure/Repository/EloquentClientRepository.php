@@ -6,7 +6,10 @@ namespace Src\Client\Infrastructure\Repository;
 
 use Src\Client\Domain\Repository\ClientRepository;
 use Src\Client\Domain\ValueObject\ClientId;
+use Src\Client\Domain\ValueObject\ClientEmail;
 use Src\Client\Domain\Entity\Client;
+use Src\Client\Domain\ValueObject\ClientDocumento;
+use Src\Client\Domain\ValueObject\ClientCelular;
 use App\Models\Cliente as EloquentClient;
 
 class EloquentClientRepository implements ClientRepository
@@ -27,6 +30,41 @@ class EloquentClientRepository implements ClientRepository
         );
     }
 
+    public function findByEmail(ClientEmail $email): ?Client
+    {
+        $eloquentClient = EloquentClient::where('email', $email->value())->first();
+        if (!$eloquentClient) {
+            return null;
+        }
+
+        return new Client(
+            new ClientId($eloquentClient->id),
+            new ClientNombres($eloquentClient->nombres),
+            new ClientDocumento($eloquentClient->documento),
+            new ClientCelular($eloquentClient->celular),
+            new ClientEmail($eloquentClient->email)
+        );
+    }
+
+    public function findByCriteria(ClientDocumento $document, ClientCelular $phone): ? Client{
+
+        $eloquentClient = EloquentClient::where('documento', $document->value())
+            ->where('celular', $phone->value())
+            ->first();
+        
+        if (!$eloquentClient) {
+            return null;
+        }
+
+        return new Client(
+            new ClientId($eloquentClient->id),
+            new ClientNombres($eloquentClient->nombres),
+            new ClientDocumento($eloquentClient->documento),
+            new ClientCelular($eloquentClient->celular),
+            new ClientEmail($eloquentClient->email)
+        );
+    }
+    
     public function save(Client $client): void
     {
         $eloquentClient = new EloquentClient();
