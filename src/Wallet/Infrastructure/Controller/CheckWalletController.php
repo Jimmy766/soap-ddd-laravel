@@ -1,36 +1,52 @@
 <?php
 
-namespace Str\Wallet\Infrastructure\Controller;
+namespace Src\Wallet\Infrastructure\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Str\Wallet\Application\UseCase\CheckWallet;
-use Str\Client\Domain\ValueObject\ClientDocumento;
-use Str\Client\Domain\ValueObject\ClientCelular;
+use Src\Wallet\Application\UseCase\CheckWallet;
+use Src\Client\Domain\ValueObject\ClientDocumento;
+use Src\Client\Domain\ValueObject\ClientCelular;
+use App\Http\Controllers\SoapBaseController;
+use Illuminate\Support\Facades\Mail;
 
-final class CheckWalletController
+final class CheckWalletController extends SoapBaseController
 {
     private CheckWallet $useCase;
 
     public function __construct(CheckWallet $useCase)
     {
+        $this->uri = 'http://localhost/soap/wallet/check';
         $this->useCase = $useCase;
     }
 
-    public function __invoke(Request $request): JsonResponse
+    public function check($documento, $celular)
     {
         try {
-            $document = new ClientDocumento($request->input('documento'));
-            $phone = new ClientCelular($request->input('celular'));
+            $document = new ClientDocumento($documento);
+            $phone = new ClientCelular($celular);
 
             $wallet = $this->useCase->__invoke($document, $phone);
 
-            return response()->json([
-                'message' => 'Wallet checked successfully',
-                'wallet' => $wallet
-            ], 200);
+            Mail::raw('
+                Your wallet has been checked successfully.
+                Current balance: ' . $wallet->saldo()->value(),
+                function ($message) use ($document) {
+                    $message->to($document->value()."@example.com")
+                        ->subject('Wallet Check Confirmation');
+                }
+            );
+
+            return $this->response(
+                true,
+                '00',
+                'Wallet checked successfully',
+                [
+                    'saldo' => $wallet->saldo()->value(),
+                ]
+            );
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return $this->error($e);
         }
     }
 }
