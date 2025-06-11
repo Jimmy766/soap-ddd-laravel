@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Src\Payment\Domain\ValueObject;
+namespace Src\Payment\Domain\Entity;
 
 use Src\Payment\Domain\ValueObject\PaymentSessionId;
 use Src\Payment\Domain\ValueObject\PaymentToken;

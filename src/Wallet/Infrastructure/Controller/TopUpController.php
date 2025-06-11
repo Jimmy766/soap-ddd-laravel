@@ -8,28 +8,30 @@ use Src\Wallet\Application\UseCase\TopUpWallet;
 use Src\Wallet\Domain\ValueObject\WalletSaldo;
 use Src\Client\Domain\ValueObject\ClientDocumento;
 use Src\Client\Domain\ValueObject\ClientCelular;
+use App\Http\Controllers\SoapBaseController;
 
-final class TopUpController
+final class TopUpController extends SoapBaseController
 {
     private TopUpWallet $useCase;
 
     public function __construct(TopUpWallet $useCase)
     {
+        $this->uri = 'http://localhost/soap/wallet/topup';
         $this->useCase = $useCase;
     }
 
-    public function __invoke(Request $request): JsonResponse
+    public function topup($documento, $celular, $monto)
     {
         try {
-            $document = new ClientDocumento($request->input('documento'));
-            $phone = new ClientCelular($request->input('celular'));
-            $amount = new WalletSaldo($request->input('monto'));
+            $document = new ClientDocumento($documento);
+            $phone = new ClientCelular($celular);
+            $amount = new WalletSaldo($monto);
 
             $this->useCase->__invoke($document, $phone, $amount);
 
-            return response()->json(['message' => 'Wallet topped up successfully'], 200);
+            return $this->response(true, '00', 'Wallet topped up successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return $this->error($e);
         }
     }
 }

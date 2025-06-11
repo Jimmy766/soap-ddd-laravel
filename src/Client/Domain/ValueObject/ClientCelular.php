@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Src\Client\Domain\ValueObject;
 
 final class ClientCelular
@@ -15,7 +16,7 @@ final class ClientCelular
         $this->value = $celular;
     }
 
-    public function value(): int
+    public function value(): string
     {
         return $this->value;
     }

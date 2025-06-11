@@ -15,7 +15,7 @@ final class ClientNombres
         $this->value = $nombres;
     }
 
-    public function value(): int
+    public function value(): string
     {
         return $this->value;
     }

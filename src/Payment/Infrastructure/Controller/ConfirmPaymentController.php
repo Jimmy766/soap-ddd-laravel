@@ -7,27 +7,29 @@ use Illuminate\Http\JsonResponse;
 use Src\Payment\Application\UseCase\ConfirmPayment;
 use Src\Payment\Domain\ValueObject\PaymentSessionId;
 use Src\Payment\Domain\ValueObject\PaymentToken;
+use App\Http\Controllers\SoapBaseController;
 
-final class ConfirmPaymentController
+final class ConfirmPaymentController extends SoapBaseController
 {
     private ConfirmPayment $useCase;
 
     public function __construct(ConfirmPayment $useCase)
     {
+        $this->uri = 'http://localhost/soap/payment/confirm';
         $this->useCase = $useCase;
     }
 
-    public function __invoke(Request $request): JsonResponse
+    public function confirm($sessionId, $token)
     {
         try {
-            $sessionId = new PaymentSessionId($request->input('session_id'));
-            $token = new PaymentToken($request->input('token'));
+            $sessionIdPayment = new PaymentSessionId($sessionId);
+            $tokenPayment = new PaymentToken($token);
 
-            $this->useCase->__invoke($sessionId, $token);
+            $this->useCase->__invoke($sessionIdPayment, $tokenPayment);
 
-            return response()->json(['message' => 'Payment confirmed successfully'], 200);
+            return $this->response(true, '00', 'Payment confirmed successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return $this->error($e);
         }
     }
 }

@@ -11,32 +11,34 @@ use Src\Client\Domain\ValueObject\ClientNombres;
 use Src\Client\Domain\ValueObject\ClientDocumento;
 use Src\Client\Domain\ValueObject\ClientCelular;
 use Src\Client\Domain\ValueObject\ClientEmail;
+use App\Http\Controllers\SoapBaseController;
 
-final class CreateClientController
+class CreateClientController extends SoapBaseController
 {
     private CreateClient $useCase;
 
     public function __construct(CreateClient $useCase)
     {
+        $this->uri = 'http://localhost/soap/client';
         $this->useCase = $useCase;
     }
 
-    public function __invoke(Request $request): JsonResponse
+    public function create($nombres, $documento, $celular, $email)
     {
         try {
             $client = new Client(
-                new ClientId($request->input('id')),
-                new ClientNombres($request->input('nombres')),
-                new ClientDocumento($request->input('documento')),
-                new ClientCelular($request->input('celular')),
-                new ClientEmail($request->input('email'))
+                new ClientId(1),
+                new ClientNombres($nombres),
+                new ClientDocumento($documento),
+                new ClientCelular($celular),
+                new ClientEmail($email)
             );
 
             $this->useCase->__invoke($client);
 
-            return response()->json(['message' => 'Client created successfully'], 200);
+            return $this->response(true, '00', 'Cliente creado correctamente');
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return $this->error($e);
         }
     }
 }

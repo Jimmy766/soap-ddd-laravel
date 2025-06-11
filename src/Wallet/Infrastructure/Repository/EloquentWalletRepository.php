@@ -27,7 +27,7 @@ class EloquentWalletRepository implements WalletRepository
             new WalletId($eloquentWallet->id),
             new WalletSaldo($eloquentWallet->saldo),
             EloquentClientParser::toDomain(
-                $eloquentWallet->client
+                $eloquentWallet->cliente
             )
         );
     }
@@ -43,7 +43,7 @@ class EloquentWalletRepository implements WalletRepository
             new WalletId($eloquentWallet->id),
             new WalletSaldo($eloquentWallet->saldo),
             EloquentClientParser::toDomain(
-                $eloquentWallet->client
+                $eloquentWallet->cliente
             )
         );
     }

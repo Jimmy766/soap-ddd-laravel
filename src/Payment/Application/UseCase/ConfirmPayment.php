@@ -10,6 +10,7 @@ use Src\Payment\Domain\ValueObject\PaymentSessionId;
 use Src\Payment\Domain\ValueObject\PaymentToken;
 use Src\Payment\Domain\ValueObject\PaymentEstado;
 use Src\Wallet\Domain\ValueObject\WalletSaldo;
+use Src\Wallet\Domain\Entity\Wallet;
 
 
 final class ConfirmPayment
