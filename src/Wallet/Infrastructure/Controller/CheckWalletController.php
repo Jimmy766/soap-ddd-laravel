@@ -8,7 +8,6 @@ use Src\Wallet\Application\UseCase\CheckWallet;
 use Src\Client\Domain\ValueObject\ClientDocumento;
 use Src\Client\Domain\ValueObject\ClientCelular;
 use App\Http\Controllers\SoapBaseController;
-use Illuminate\Support\Facades\Mail;
 
 final class CheckWalletController extends SoapBaseController
 {

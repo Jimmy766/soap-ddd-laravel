@@ -18,21 +18,25 @@ use Src\Client\Domain\ValueObject\ClientCelular;
 use Src\Client\Domain\Repository\ClientRepository;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Src\Payment\Domain\Service\Mailer;
 
 final class DoPay
 {
     private PaymentRepository $paymentRepository;
     private WalletRepository $walletRepository;
     private ClientRepository $clientRepository;
+    private Mailer $mailer;
 
     public function __construct(
         PaymentRepository $paymentRepository,
         WalletRepository $walletRepository,
-        ClientRepository $clientRepository
+        ClientRepository $clientRepository,
+        Mailer $mailer
     ) {
         $this->paymentRepository = $paymentRepository;
         $this->walletRepository = $walletRepository;
         $this->clientRepository = $clientRepository;
+        $this->mailer = $mailer;
     }
 
     public function __invoke(ClientDocumento $document, ClientCelular $phone, PaymentMonto $amount): void
@@ -57,6 +61,12 @@ final class DoPay
             $amount,
             new PaymentEstado('pendiente'),
             $wallet->client()
+        );
+
+        $this->mailer->send(
+            $client->email()->value(),
+            "Payment Confirmation",
+            "You have pending payment of " . $amount->value() . ". Session ID: " . $sesionId->value() . ", Token: " . $token->value()
         );
 
         Log::info("Processing payment for client ID: " . $client->id()->value() . " with amount: " . $amount->value());
