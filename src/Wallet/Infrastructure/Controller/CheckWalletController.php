@@ -28,15 +28,6 @@ final class CheckWalletController extends SoapBaseController
 
             $wallet = $this->useCase->__invoke($document, $phone);
 
-            Mail::raw('
-                Your wallet has been checked successfully.
-                Current balance: ' . $wallet->saldo()->value(),
-                function ($message) use ($document) {
-                    $message->to($document->value()."@example.com")
-                        ->subject('Wallet Check Confirmation');
-                }
-            );
-
             return $this->response(
                 true,
                 '00',
