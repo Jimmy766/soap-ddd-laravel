@@ -9,6 +9,7 @@ use Src\Payment\Domain\ValueObject\PaymentMonto;
 use Src\Payment\Domain\ValueObject\PaymentSessionId;
 use Src\Payment\Domain\ValueObject\PaymentToken;
 use Src\Payment\Domain\ValueObject\PaymentEstado;
+use Src\Client\Infrastructure\Parser\EloquentToDomain as EloquentClientParser;
 use App\Models\Pago as EloquentPayment;
 
 class EloquentPaymentRepository implements PaymentRepository
@@ -25,7 +26,7 @@ class EloquentPaymentRepository implements PaymentRepository
             new PaymentToken($eloquentPayment->token),
             new PaymentMonto($eloquentPayment->monto),
             new PaymentEstado($eloquentPayment->estado),
-            $eloquentPayment->cliente
+            EloquentClientParser::toDomain(($eloquentPayment->cliente))
         );
     }
 
@@ -43,7 +44,7 @@ class EloquentPaymentRepository implements PaymentRepository
             new PaymentToken($eloquentPayment->token),
             new PaymentMonto($eloquentPayment->monto),
             new PaymentEstado($eloquentPayment->estado),
-            $eloquentPayment->cliente
+            EloquentClientParser::toDomain(($eloquentPayment->cliente))
         );
     }
 
@@ -60,7 +61,7 @@ class EloquentPaymentRepository implements PaymentRepository
 
     public function update(Payment $payment): void
     {
-        $eloquentPayment = EloquentPayment::find($payment->getId()->value());
+        $eloquentPayment = EloquentPayment::find($payment->id()->value());
         if ($eloquentPayment) {
             $eloquentPayment->update([
                 'monto' => $payment->monto()->value(),

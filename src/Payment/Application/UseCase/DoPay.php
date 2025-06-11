@@ -16,6 +16,8 @@ use Src\Client\Domain\ValueObject\ClientId;
 use Src\Client\Domain\ValueObject\ClientDocumento;
 use Src\Client\Domain\ValueObject\ClientCelular;
 use Src\Client\Domain\Repository\ClientRepository;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 final class DoPay
 {
@@ -56,6 +58,9 @@ final class DoPay
             new PaymentEstado('pendiente'),
             $wallet->client()
         );
+
+        Log::info("Processing payment for client ID: " . $client->id()->value() . " with amount: " . $amount->value());
+        Log::info("Payment session ID: " . $sesionId->value() . " and token: " . $token->value());
 
         $this->paymentRepository->save($payment);
     }

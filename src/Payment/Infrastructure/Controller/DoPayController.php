@@ -5,31 +5,33 @@ namespace Src\Payment\Infrastructure\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Src\Payment\Application\UseCase\DoPay;
-use Src\Payment\Domain\ValueObject\PaymentAmount;
+use Src\Payment\Domain\ValueObject\PaymentMonto;
 use Src\Client\Domain\ValueObject\ClientDocumento;
 use Src\Client\Domain\ValueObject\ClientCelular;
+use App\Http\Controllers\SoapBaseController;
 
-final class DoPayController
+final class DoPayController extends SoapBaseController
 {
     private DoPay $useCase;
 
     public function __construct(DoPay $useCase)
     {
+        $this->uri = 'http://localhost/soap/payment/dopay';
         $this->useCase = $useCase;
     }
 
-    public function __invoke(Request $request): JsonResponse
+    public function dopay($documento, $celular, $monto)
     {
         try {
-            $document = new ClientDocumento($request->input('documento'));
-            $phone = new ClientCelular($request->input('celular'));
-            $amount = new PaymentAmount($request->input('monto'));
+            $document = new ClientDocumento($documento);
+            $phone = new ClientCelular($celular);
+            $amount = new PaymentMonto($monto);
 
             $this->useCase->__invoke($document, $phone, $amount);
 
-            return response()->json(['message' => 'Payment processed successfully'], 200);
+            return $this->response(true, '00', 'Payment processed successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return $this->error($e);
         }
     }
 }
