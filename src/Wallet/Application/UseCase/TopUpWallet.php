@@ -4,6 +4,7 @@ namespace Src\Wallet\Application\UseCase;
 
 use Src\Wallet\Domain\Repository\WalletRepository;
 use Src\Wallet\Domain\Entity\Wallet;
+use Src\Wallet\Domain\ValueObject\WalletId;
 use Src\Client\Domain\ValueObject\ClientId;
 use Src\Wallet\Domain\ValueObject\WalletSaldo;
 use Src\Client\Domain\Repository\ClientRepository;
@@ -28,17 +29,17 @@ final class TopUpWallet
             throw new \Exception("Client not found for document: " . $document->value() . " and phone: " . $phone->value());
         }
         $wallet = $this->walletRepository->findByClientId($client->id());
-        if(!wallet){
+        if(!$wallet){
             $this->walletRepository->save(new Wallet(
                 new WalletId(1),
                 $amount,
                 $client
             ));
-            $wallet = $this->walletRepository->findByClientId($clientId);
+            $wallet = $this->walletRepository->findByClientId($client->id());
         }
         $newSaldo = $wallet->saldo()->value() + $amount->value();
         
-        $this->repository->update(
+        $this->walletRepository->update(
             new Wallet(
                 $wallet->id(),
                 new WalletSaldo($newSaldo),
