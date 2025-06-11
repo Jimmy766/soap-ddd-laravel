@@ -11,12 +11,12 @@ final class PaymentMonto
     public function __construct(float $amount)
     {
         if ($amount <= 0) {
-            throw new \InvalidArgumentException('Payment Amount must be a positive integer.');
+            throw new \InvalidArgumentException('Payment Amount must be a positive float.');
         }
         $this->value = $amount;
     }
 
-    public function value(): int
+    public function value(): float
     {
         return $this->value;
     }

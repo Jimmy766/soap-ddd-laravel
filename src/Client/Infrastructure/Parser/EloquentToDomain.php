@@ -12,7 +12,7 @@ use App\Models\Cliente as EloquentClient;
 
 class EloquentToDomain
 {
-    public static function client(EloquentClient $eloquentClient): Client
+    public static function toDomain(EloquentClient $eloquentClient): Client
     {
         return new Client(
             new ClientId($eloquentClient->id),

@@ -15,7 +15,7 @@ final class ClientDocumento
         $this->value = $documento;
     }
 
-    public function value(): int
+    public function value(): string
     {
         return $this->value;
     }

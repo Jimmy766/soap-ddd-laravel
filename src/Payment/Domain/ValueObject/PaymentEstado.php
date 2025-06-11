@@ -13,7 +13,7 @@ final class PaymentEstado
         if (empty($estado)) {
             throw new \InvalidArgumentException('Payment Status cannot be empty.');
         }
-        if (!in_array($estado, ['pendiente', 'completado', 'cancelado'], true)) {
+        if (!in_array($estado, ['pendiente', 'confirmado', 'cancelado'], true)) {
             throw new \InvalidArgumentException('Invalid payment status provided.');
         }
 
