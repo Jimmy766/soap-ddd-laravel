@@ -8,6 +8,7 @@ use Src\Client\Domain\Repository\ClientRepository;
 use Src\Client\Domain\ValueObject\ClientId;
 use Src\Client\Domain\ValueObject\ClientEmail;
 use Src\Client\Domain\Entity\Client;
+use Src\Client\Domain\ValueObject\ClientNombres;
 use Src\Client\Domain\ValueObject\ClientDocumento;
 use Src\Client\Domain\ValueObject\ClientCelular;
 use App\Models\Cliente as EloquentClient;
